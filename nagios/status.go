@@ -236,7 +236,7 @@ func (g GeneralServiceRequest) build(query string, includeStartCount bool) Query
 }
 
 type ServiceCountRequest struct {
-	GeneralHostRequest
+	GeneralServiceRequest
 }
 
 func (s ServiceCountRequest) Build() Query {
@@ -244,7 +244,7 @@ func (s ServiceCountRequest) Build() Query {
 }
 
 type ServiceListRequest struct {
-	GeneralHostRequest
+	GeneralServiceRequest
 }
 
 func (s ServiceListRequest) Build() Query {
@@ -472,100 +472,121 @@ type Checks struct {
 	OneHour int `json:"1hour"`
 	Start   int `json:"start"`
 }
+
 type CheckExecutionTime struct {
 	Min     float64 `json:"min"`
 	Max     float64 `json:"max"`
 	Average float64 `json:"average"`
 }
+
 type CheckLatency struct {
 	Min     float64 `json:"min"`
 	Max     float64 `json:"max"`
 	Average float64 `json:"average"`
 }
+
 type PercentStateChange struct {
 	Min     float64 `json:"min"`
 	Max     float64 `json:"max"`
 	Average float64 `json:"average"`
 }
+
 type MetricsActive struct {
 	CheckExecutionTime CheckExecutionTime `json:"check_execution_time"`
 	CheckLatency       CheckLatency       `json:"check_latency"`
 	PercentStateChange PercentStateChange `json:"percent_state_change"`
 }
+
 type Active struct {
 	Checks  Checks        `json:"checks"`
 	Metrics MetricsActive `json:"metrics"`
 }
+
 type MetricsPassive struct {
 	PercentStateChange PercentStateChange `json:"percent_state_change"`
 }
+
 type Passive struct {
 	Checks  Checks         `json:"checks"`
 	Metrics MetricsPassive `json:"metrics"`
 }
+
 type ServiceChecks struct {
 	Active  Active  `json:"active"`
 	Passive Passive `json:"passive"`
 }
+
 type HostChecks struct {
 	Active  Active  `json:"active"`
 	Passive Passive `json:"passive"`
 }
+
 type ActiveScheduledHostChecks struct {
 	OneMin  int `json:"1min"`
 	FiveMin int `json:"5min"`
 	One5Min int `json:"15min"`
 }
+
 type ActiveOndemandHostChecks struct {
 	OneMin  int `json:"1min"`
 	FiveMin int `json:"5min"`
 	One5Min int `json:"15min"`
 }
+
 type ParallelHostChecks struct {
 	OneMin  int `json:"1min"`
 	FiveMin int `json:"5min"`
 	One5Min int `json:"15min"`
 }
+
 type SerialHostChecks struct {
 	OneMin  int `json:"1min"`
 	FiveMin int `json:"5min"`
 	One5Min int `json:"15min"`
 }
+
 type CachedHostChecks struct {
 	OneMin  int `json:"1min"`
 	FiveMin int `json:"5min"`
 	One5Min int `json:"15min"`
 }
+
 type PassiveHostChecks struct {
 	OneMin  int `json:"1min"`
 	FiveMin int `json:"5min"`
 	One5Min int `json:"15min"`
 }
+
 type ActiveScheduledServiceChecks struct {
 	OneMin  int `json:"1min"`
 	FiveMin int `json:"5min"`
 	One5Min int `json:"15min"`
 }
+
 type ActiveOndemandServiceChecks struct {
 	OneMin  int `json:"1min"`
 	FiveMin int `json:"5min"`
 	One5Min int `json:"15min"`
 }
+
 type CachedServiceChecks struct {
 	OneMin  int `json:"1min"`
 	FiveMin int `json:"5min"`
 	One5Min int `json:"15min"`
 }
+
 type PassiveServiceChecks struct {
 	OneMin  int `json:"1min"`
 	FiveMin int `json:"5min"`
 	One5Min int `json:"15min"`
 }
+
 type ExternalCommands struct {
 	OneMin  int `json:"1min"`
 	FiveMin int `json:"5min"`
 	One5Min int `json:"15min"`
 }
+
 type CheckStatistics struct {
 	ActiveScheduledHostChecks    ActiveScheduledHostChecks    `json:"active_scheduled_host_checks"`
 	ActiveOndemandHostChecks     ActiveOndemandHostChecks     `json:"active_ondemand_host_checks"`
@@ -579,20 +600,24 @@ type CheckStatistics struct {
 	PassiveServiceChecks         PassiveServiceChecks         `json:"passive_service_checks"`
 	ExternalCommands             ExternalCommands             `json:"external_commands"`
 }
+
 type ExternalCommandsBuffer struct {
 	InUse          int `json:"in_use"`
 	MaxUsed        int `json:"max_used"`
 	TotalAvailable int `json:"total_available"`
 }
+
 type BufferUsage struct {
 	ExternalCommands ExternalCommandsBuffer `json:"external_commands"`
 }
+
 type Programstatus struct {
 	ServiceChecks   ServiceChecks   `json:"service_checks"`
 	HostChecks      HostChecks      `json:"host_checks"`
 	CheckStatistics CheckStatistics `json:"check_statistics"`
 	BufferUsage     BufferUsage     `json:"buffer_usage"`
 }
+
 type PerformanceData struct {
 	Programstatus Programstatus `json:"programstatus"`
 }
