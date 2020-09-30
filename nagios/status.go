@@ -85,8 +85,8 @@ func (g GeneralHostRequest) build(query string, includeStartCount bool) Query {
 	q.SetNonEmpty("contactname", g.ContactName)
 
 	q.SetNonEmpty("hosttimefield", g.HostTimeField)
-	q.URLQuery.Set("starttime", strconv.FormatInt(g.StartTime, 10))
-	q.URLQuery.Set("endtime", strconv.FormatInt(g.EndTime, 10))
+	q.SetNonEmpty("starttime", strconv.FormatInt(g.StartTime, 10))
+	q.SetNonEmpty("endtime", strconv.FormatInt(g.EndTime, 10))
 
 	return q
 }
@@ -127,7 +127,7 @@ type HostCount struct {
 
 type HostListData struct {
 	Selectors map[string]json.RawMessage `json:"selectors"`
-	HostList  map[string]json.RawMessage `json:"hostlist"`
+	HostList  map[string]string          `json:"hostlist"`
 }
 
 type HostList struct {
@@ -229,8 +229,8 @@ func (g GeneralServiceRequest) build(query string, includeStartCount bool) Query
 	q.SetNonEmpty("contactname", g.ContactName)
 
 	q.SetNonEmpty("servicetimefield", g.ServiceTimeField)
-	q.URLQuery.Set("starttime", strconv.FormatInt(g.StartTime, 10))
-	q.URLQuery.Set("endtime", strconv.FormatInt(g.EndTime, 10))
+	q.SetNonEmpty("starttime", strconv.FormatInt(g.StartTime, 10))
+	q.SetNonEmpty("endtime", strconv.FormatInt(g.EndTime, 10))
 
 	return q
 }
@@ -287,22 +287,19 @@ type HostRequest struct {
 	HostName      string
 }
 
-func (h HostRequest) build(query string) Query {
+func (h HostRequest) Build() Query {
 	q := Query{
 		Endpoint: statusEndpoint,
 		URLQuery: make(url.Values),
 	}
 
-	q.SetNonEmpty("query", query)
+	q.SetNonEmpty("query", "host")
+
 	q.SetNonEmpty("formatoptions", h.FormatOptions.String())
 	q.SetNonEmpty("dateformat", h.DateFormat)
 	q.SetNonEmpty("hostname", h.HostName)
 
 	return q
-}
-
-func (h HostRequest) Build() Query {
-	return h.build("host")
 }
 
 type HostDetails struct {
@@ -364,23 +361,20 @@ type ServiceRequest struct {
 	ServiceDescription string
 }
 
-func (s ServiceRequest) build(query string) Query {
+func (s ServiceRequest) Build() Query {
 	q := Query{
 		Endpoint: statusEndpoint,
 		URLQuery: make(url.Values),
 	}
 
-	q.SetNonEmpty("query", query)
+	q.SetNonEmpty("query", "service")
+
 	q.SetNonEmpty("formatoptions", s.FormatOptions.String())
 	q.SetNonEmpty("dateformat", s.DateFormat)
 	q.SetNonEmpty("hostname", s.HostName)
 	q.SetNonEmpty("servicedescription", s.ServiceDescription)
 
 	return q
-}
-
-func (s ServiceRequest) Build() Query {
-	return s.build("service")
 }
 
 type ServiceDetails struct {
@@ -442,182 +436,180 @@ type PerformanceDataRequest struct {
 	DateFormat    string
 }
 
-func (p PerformanceDataRequest) build(query string) Query {
+func (p PerformanceDataRequest) Build() Query {
 	q := Query{
 		Endpoint: statusEndpoint,
 		URLQuery: make(url.Values),
 	}
 
-	q.SetNonEmpty("query", query)
+	q.SetNonEmpty("query", "performancedata")
 	q.SetNonEmpty("formatoptions", p.FormatOptions.String())
 	q.SetNonEmpty("dateformat", p.DateFormat)
 
 	return q
 }
 
-func (p PerformanceDataRequest) Build() Query {
-	return p.build("performancedata")
-}
+type (
+	Checks struct {
+		OneMin     int `json:"1min"`
+		FiveMin    int `json:"5min"`
+		FifteenMin int `json:"15min"`
+		OneHour    int `json:"1hour"`
+		Start      int `json:"start"`
+	}
 
-type Performance struct {
-	FormatVersion int             `json:"format_version"`
-	Result        Result          `json:"result"`
-	Data          PerformanceData `json:"data"`
-}
+	CheckExecutionTime struct {
+		Min     float64 `json:"min"`
+		Max     float64 `json:"max"`
+		Average float64 `json:"average"`
+	}
 
-type Checks struct {
-	OneMin  int `json:"1min"`
-	FiveMin int `json:"5min"`
-	One5Min int `json:"15min"`
-	OneHour int `json:"1hour"`
-	Start   int `json:"start"`
-}
+	CheckLatency struct {
+		Min     float64 `json:"min"`
+		Max     float64 `json:"max"`
+		Average float64 `json:"average"`
+	}
 
-type CheckExecutionTime struct {
-	Min     float64 `json:"min"`
-	Max     float64 `json:"max"`
-	Average float64 `json:"average"`
-}
+	PercentStateChange struct {
+		Min     float64 `json:"min"`
+		Max     float64 `json:"max"`
+		Average float64 `json:"average"`
+	}
 
-type CheckLatency struct {
-	Min     float64 `json:"min"`
-	Max     float64 `json:"max"`
-	Average float64 `json:"average"`
-}
+	MetricsActive struct {
+		CheckExecutionTime CheckExecutionTime `json:"check_execution_time"`
+		CheckLatency       CheckLatency       `json:"check_latency"`
+		PercentStateChange PercentStateChange `json:"percent_state_change"`
+	}
 
-type PercentStateChange struct {
-	Min     float64 `json:"min"`
-	Max     float64 `json:"max"`
-	Average float64 `json:"average"`
-}
+	Active struct {
+		Checks  Checks        `json:"checks"`
+		Metrics MetricsActive `json:"metrics"`
+	}
 
-type MetricsActive struct {
-	CheckExecutionTime CheckExecutionTime `json:"check_execution_time"`
-	CheckLatency       CheckLatency       `json:"check_latency"`
-	PercentStateChange PercentStateChange `json:"percent_state_change"`
-}
+	MetricsPassive struct {
+		PercentStateChange PercentStateChange `json:"percent_state_change"`
+	}
 
-type Active struct {
-	Checks  Checks        `json:"checks"`
-	Metrics MetricsActive `json:"metrics"`
-}
+	Passive struct {
+		Checks  Checks         `json:"checks"`
+		Metrics MetricsPassive `json:"metrics"`
+	}
 
-type MetricsPassive struct {
-	PercentStateChange PercentStateChange `json:"percent_state_change"`
-}
+	ServiceChecks struct {
+		Active  Active  `json:"active"`
+		Passive Passive `json:"passive"`
+	}
 
-type Passive struct {
-	Checks  Checks         `json:"checks"`
-	Metrics MetricsPassive `json:"metrics"`
-}
+	HostChecks struct {
+		Active  Active  `json:"active"`
+		Passive Passive `json:"passive"`
+	}
 
-type ServiceChecks struct {
-	Active  Active  `json:"active"`
-	Passive Passive `json:"passive"`
-}
+	ActiveScheduledHostChecks struct {
+		OneMin     int `json:"1min"`
+		FiveMin    int `json:"5min"`
+		FifteenMin int `json:"15min"`
+	}
 
-type HostChecks struct {
-	Active  Active  `json:"active"`
-	Passive Passive `json:"passive"`
-}
+	ActiveOnDemandHostChecks struct {
+		OneMin     int `json:"1min"`
+		FiveMin    int `json:"5min"`
+		FifteenMin int `json:"15min"`
+	}
 
-type ActiveScheduledHostChecks struct {
-	OneMin  int `json:"1min"`
-	FiveMin int `json:"5min"`
-	One5Min int `json:"15min"`
-}
+	ParallelHostChecks struct {
+		OneMin     int `json:"1min"`
+		FiveMin    int `json:"5min"`
+		FifteenMin int `json:"15min"`
+	}
 
-type ActiveOndemandHostChecks struct {
-	OneMin  int `json:"1min"`
-	FiveMin int `json:"5min"`
-	One5Min int `json:"15min"`
-}
+	SerialHostChecks struct {
+		OneMin     int `json:"1min"`
+		FiveMin    int `json:"5min"`
+		FifteenMin int `json:"15min"`
+	}
 
-type ParallelHostChecks struct {
-	OneMin  int `json:"1min"`
-	FiveMin int `json:"5min"`
-	One5Min int `json:"15min"`
-}
+	CachedHostChecks struct {
+		OneMin     int `json:"1min"`
+		FiveMin    int `json:"5min"`
+		FifteenMin int `json:"15min"`
+	}
 
-type SerialHostChecks struct {
-	OneMin  int `json:"1min"`
-	FiveMin int `json:"5min"`
-	One5Min int `json:"15min"`
-}
+	PassiveHostChecks struct {
+		OneMin     int `json:"1min"`
+		FiveMin    int `json:"5min"`
+		FifteenMin int `json:"15min"`
+	}
 
-type CachedHostChecks struct {
-	OneMin  int `json:"1min"`
-	FiveMin int `json:"5min"`
-	One5Min int `json:"15min"`
-}
+	ActiveScheduledServiceChecks struct {
+		OneMin     int `json:"1min"`
+		FiveMin    int `json:"5min"`
+		FifteenMin int `json:"15min"`
+	}
 
-type PassiveHostChecks struct {
-	OneMin  int `json:"1min"`
-	FiveMin int `json:"5min"`
-	One5Min int `json:"15min"`
-}
+	ActiveOnDemandServiceChecks struct {
+		OneMin     int `json:"1min"`
+		FiveMin    int `json:"5min"`
+		FifteenMin int `json:"15min"`
+	}
 
-type ActiveScheduledServiceChecks struct {
-	OneMin  int `json:"1min"`
-	FiveMin int `json:"5min"`
-	One5Min int `json:"15min"`
-}
+	CachedServiceChecks struct {
+		OneMin     int `json:"1min"`
+		FiveMin    int `json:"5min"`
+		FifteenMin int `json:"15min"`
+	}
 
-type ActiveOndemandServiceChecks struct {
-	OneMin  int `json:"1min"`
-	FiveMin int `json:"5min"`
-	One5Min int `json:"15min"`
-}
+	PassiveServiceChecks struct {
+		OneMin     int `json:"1min"`
+		FiveMin    int `json:"5min"`
+		FifteenMin int `json:"15min"`
+	}
 
-type CachedServiceChecks struct {
-	OneMin  int `json:"1min"`
-	FiveMin int `json:"5min"`
-	One5Min int `json:"15min"`
-}
+	ExternalCommands struct {
+		OneMin     int `json:"1min"`
+		FiveMin    int `json:"5min"`
+		FifteenMin int `json:"15min"`
+	}
 
-type PassiveServiceChecks struct {
-	OneMin  int `json:"1min"`
-	FiveMin int `json:"5min"`
-	One5Min int `json:"15min"`
-}
+	CheckStatistics struct {
+		ActiveScheduledHostChecks    ActiveScheduledHostChecks    `json:"active_scheduled_host_checks"`
+		ActiveOnDemandHostChecks     ActiveOnDemandHostChecks     `json:"active_ondemand_host_checks"`
+		ParallelHostChecks           ParallelHostChecks           `json:"parallel_host_checks"`
+		SerialHostChecks             SerialHostChecks             `json:"serial_host_checks"`
+		CachedHostChecks             CachedHostChecks             `json:"cached_host_checks"`
+		PassiveHostChecks            PassiveHostChecks            `json:"passive_host_checks"`
+		ActiveScheduledServiceChecks ActiveScheduledServiceChecks `json:"active_scheduled_service_checks"`
+		ActiveOnDemandServiceChecks  ActiveOnDemandServiceChecks  `json:"active_ondemand_service_checks"`
+		CachedServiceChecks          CachedServiceChecks          `json:"cached_service_checks"`
+		PassiveServiceChecks         PassiveServiceChecks         `json:"passive_service_checks"`
+		ExternalCommands             ExternalCommands             `json:"external_commands"`
+	}
 
-type ExternalCommands struct {
-	OneMin  int `json:"1min"`
-	FiveMin int `json:"5min"`
-	One5Min int `json:"15min"`
-}
+	ExternalCommandsBuffer struct {
+		InUse          int `json:"in_use"`
+		MaxUsed        int `json:"max_used"`
+		TotalAvailable int `json:"total_available"`
+	}
 
-type CheckStatistics struct {
-	ActiveScheduledHostChecks    ActiveScheduledHostChecks    `json:"active_scheduled_host_checks"`
-	ActiveOndemandHostChecks     ActiveOndemandHostChecks     `json:"active_ondemand_host_checks"`
-	ParallelHostChecks           ParallelHostChecks           `json:"parallel_host_checks"`
-	SerialHostChecks             SerialHostChecks             `json:"serial_host_checks"`
-	CachedHostChecks             CachedHostChecks             `json:"cached_host_checks"`
-	PassiveHostChecks            PassiveHostChecks            `json:"passive_host_checks"`
-	ActiveScheduledServiceChecks ActiveScheduledServiceChecks `json:"active_scheduled_service_checks"`
-	ActiveOndemandServiceChecks  ActiveOndemandServiceChecks  `json:"active_ondemand_service_checks"`
-	CachedServiceChecks          CachedServiceChecks          `json:"cached_service_checks"`
-	PassiveServiceChecks         PassiveServiceChecks         `json:"passive_service_checks"`
-	ExternalCommands             ExternalCommands             `json:"external_commands"`
-}
+	BufferUsage struct {
+		ExternalCommands ExternalCommandsBuffer `json:"external_commands"`
+	}
 
-type ExternalCommandsBuffer struct {
-	InUse          int `json:"in_use"`
-	MaxUsed        int `json:"max_used"`
-	TotalAvailable int `json:"total_available"`
-}
+	ProgramStatus struct {
+		ServiceChecks   ServiceChecks   `json:"service_checks"`
+		HostChecks      HostChecks      `json:"host_checks"`
+		CheckStatistics CheckStatistics `json:"check_statistics"`
+		BufferUsage     BufferUsage     `json:"buffer_usage"`
+	}
 
-type BufferUsage struct {
-	ExternalCommands ExternalCommandsBuffer `json:"external_commands"`
-}
+	PerformanceData struct {
+		ProgramStatus ProgramStatus `json:"programstatus"`
+	}
 
-type Programstatus struct {
-	ServiceChecks   ServiceChecks   `json:"service_checks"`
-	HostChecks      HostChecks      `json:"host_checks"`
-	CheckStatistics CheckStatistics `json:"check_statistics"`
-	BufferUsage     BufferUsage     `json:"buffer_usage"`
-}
-
-type PerformanceData struct {
-	Programstatus Programstatus `json:"programstatus"`
-}
+	Performance struct {
+		FormatVersion int             `json:"format_version"`
+		Result        Result          `json:"result"`
+		Data          PerformanceData `json:"data"`
+	}
+)
