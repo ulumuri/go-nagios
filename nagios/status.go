@@ -73,20 +73,27 @@ func (g GeneralHostRequest) build(query string, includeStartCount bool) Query {
 
 	q.SetNonEmpty("parenthost", g.ParentHost)
 	q.SetNonEmpty("childhost", g.ChildHost)
-	q.SetNonEmpty("showdetails", strconv.FormatBool(g.ShowDetails))
+
+	if g.ShowDetails {
+		q.URLQuery.Set("details", strconv.FormatBool(g.ShowDetails))
+	}
+
 	q.SetNonEmpty("dateformat", g.DateFormat)
 	q.SetNonEmpty("hostgroup", g.HostGroup)
 	q.SetNonEmpty("hoststatus", g.HostStatus.String())
 	q.SetNonEmpty("contactgroup", g.ContactGroup)
-	q.SetNonEmpty("checktimeperiodname", g.CheckTimeperiodName)
-	q.SetNonEmpty("hostnotificationtimeperiodname", g.HostNotificationTimeperiodName)
-	q.SetNonEmpty("checkcommandname", g.CheckCommandName)
-	q.SetNonEmpty("eventhandlername", g.EventHandlerName)
+	q.SetNonEmpty("checktimeperiod", g.CheckTimeperiodName)
+	q.SetNonEmpty("hostnotificationtimeperiod", g.HostNotificationTimeperiodName)
+	q.SetNonEmpty("checkcommand", g.CheckCommandName)
+	q.SetNonEmpty("eventhandler", g.EventHandlerName)
 	q.SetNonEmpty("contactname", g.ContactName)
 
 	q.SetNonEmpty("hosttimefield", g.HostTimeField)
-	q.SetNonEmpty("starttime", strconv.FormatInt(g.StartTime, 10))
-	q.SetNonEmpty("endtime", strconv.FormatInt(g.EndTime, 10))
+
+	if g.StartTime != 0 || g.EndTime != 0 {
+		q.URLQuery.Set("starttime", strconv.FormatInt(g.StartTime, 10))
+		q.URLQuery.Set("endtime", strconv.FormatInt(g.EndTime, 10))
+	}
 
 	return q
 }
@@ -211,7 +218,11 @@ func (g GeneralServiceRequest) build(query string, includeStartCount bool) Query
 
 	q.SetNonEmpty("parenthost", g.ParentHost)
 	q.SetNonEmpty("childhost", g.ChildHost)
-	q.SetNonEmpty("showdetails", strconv.FormatBool(g.ShowDetails))
+
+	if g.ShowDetails {
+		q.URLQuery.Set("details", strconv.FormatBool(g.ShowDetails))
+	}
+
 	q.SetNonEmpty("dateformat", g.DateFormat)
 	q.SetNonEmpty("hostname", g.HostName)
 	q.SetNonEmpty("hostgroup", g.HostGroup)
@@ -222,15 +233,18 @@ func (g GeneralServiceRequest) build(query string, includeStartCount bool) Query
 	q.SetNonEmpty("childservice", g.ChildService)
 	q.SetNonEmpty("contactgroup", g.ContactGroup)
 	q.SetNonEmpty("servicedescription", g.ServiceDescription)
-	q.SetNonEmpty("checktimeperiodname", g.CheckTimeperiodName)
-	q.SetNonEmpty("servicenotificationtimeperiodname", g.ServiceNotificationTimeperiodName)
-	q.SetNonEmpty("checkcommandname", g.CheckCommandName)
-	q.SetNonEmpty("eventhandlername", g.EventHandlerName)
+	q.SetNonEmpty("checktimeperiod", g.CheckTimeperiodName)
+	q.SetNonEmpty("servicenotificationtimeperiod", g.ServiceNotificationTimeperiodName)
+	q.SetNonEmpty("checkcommand", g.CheckCommandName)
+	q.SetNonEmpty("eventhandler", g.EventHandlerName)
 	q.SetNonEmpty("contactname", g.ContactName)
 
 	q.SetNonEmpty("servicetimefield", g.ServiceTimeField)
-	q.SetNonEmpty("starttime", strconv.FormatInt(g.StartTime, 10))
-	q.SetNonEmpty("endtime", strconv.FormatInt(g.EndTime, 10))
+
+	if g.StartTime != 0 || g.EndTime != 0 {
+		q.URLQuery.Set("starttime", strconv.FormatInt(g.StartTime, 10))
+		q.URLQuery.Set("endtime", strconv.FormatInt(g.EndTime, 10))
+	}
 
 	return q
 }
@@ -294,10 +308,10 @@ func (h HostRequest) Build() Query {
 	}
 
 	q.SetNonEmpty("query", "host")
-
 	q.SetNonEmpty("formatoptions", h.FormatOptions.String())
 	q.SetNonEmpty("dateformat", h.DateFormat)
-	q.SetNonEmpty("hostname", h.HostName)
+
+	q.URLQuery.Set("hostname", h.HostName)
 
 	return q
 }
@@ -368,11 +382,11 @@ func (s ServiceRequest) Build() Query {
 	}
 
 	q.SetNonEmpty("query", "service")
-
 	q.SetNonEmpty("formatoptions", s.FormatOptions.String())
 	q.SetNonEmpty("dateformat", s.DateFormat)
-	q.SetNonEmpty("hostname", s.HostName)
-	q.SetNonEmpty("servicedescription", s.ServiceDescription)
+
+	q.URLQuery.Set("hostname", s.HostName)
+	q.URLQuery.Set("servicedescription", s.ServiceDescription)
 
 	return q
 }
