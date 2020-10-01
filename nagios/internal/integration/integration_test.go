@@ -387,7 +387,6 @@ func TestStatus(t *testing.T) {
 					Unreachable: true,
 					Pending:     true,
 				},
-				ShowDetails: true,
 			},
 		}
 
@@ -510,7 +509,6 @@ func TestStatus(t *testing.T) {
 					Unreachable: true,
 					Pending:     true,
 				},
-				ShowDetails: true,
 			},
 		}
 

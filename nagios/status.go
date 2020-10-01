@@ -132,9 +132,10 @@ type HostCount struct {
 	Data          HostCountData `json:"data"`
 }
 
+//TODO(DanielSz50): Handle showDetails check properly
 type HostListData struct {
 	Selectors map[string]json.RawMessage `json:"selectors"`
-	HostList  map[string]string          `json:"hostlist"`
+	HostList  map[string]json.RawMessage `json:"hostlist"`
 }
 
 type HostList struct {
@@ -330,20 +331,20 @@ type HostDetails struct {
 	LastCheck                  int64   `json:"last_check"`
 	NextCheck                  int64   `json:"next_check"`
 	CheckOptions               int     `json:"check_options"`
-	CheckType                  int     `json:"check_type"`
+	CheckType                  string  `json:"check_type"`
 	LastStateChange            int64   `json:"last_state_change"`
 	LastHardStateChange        int64   `json:"last_hard_state_change"`
-	LastHardState              int     `json:"last_hard_state"`
+	LastHardState              string  `json:"last_hard_state"`
 	LastTimeUp                 int64   `json:"last_time_up"`
 	LastTimeDown               int     `json:"last_time_down"`
 	LastTimeUnreachable        int     `json:"last_time_unreachable"`
-	StateType                  int     `json:"state_type"`
+	StateType                  string  `json:"state_type"`
 	LastNotification           int     `json:"last_notification"`
 	NextNotification           int     `json:"next_notification"`
 	NoMoreNotifications        bool    `json:"no_more_notifications"`
 	NotificationsEnabled       bool    `json:"notifications_enabled"`
 	ProblemHasBeenAcknowledged bool    `json:"problem_has_been_acknowledged"`
-	AcknowledgementType        int     `json:"acknowledgement_type"`
+	AcknowledgementType        string  `json:"acknowledgement_type"`
 	CurrentNotificationNumber  int     `json:"current_notification_number"`
 	AcceptPassiveChecks        bool    `json:"accept_passive_checks"`
 	EventHandlerEnabled        bool    `json:"event_handler_enabled"`
@@ -405,23 +406,23 @@ type ServiceDetails struct {
 	ShouldBeScheduled          bool    `json:"should_be_scheduled"`
 	LastCheck                  int64   `json:"last_check"`
 	CheckOptions               int     `json:"check_options"`
-	CheckType                  int     `json:"check_type"`
+	CheckType                  string  `json:"check_type"`
 	ChecksEnabled              bool    `json:"checks_enabled"`
 	LastStateChange            int64   `json:"last_state_change"`
 	LastHardStateChange        int64   `json:"last_hard_state_change"`
-	LastHardState              int     `json:"last_hard_state"`
+	LastHardState              string  `json:"last_hard_state"`
 	LastTimeOk                 int64   `json:"last_time_ok"`
-	LastTimeWarning            int     `json:"last_time_warning"`
+	LastTimeWarning            int64   `json:"last_time_warning"`
 	LastTimeUnknown            int     `json:"last_time_unknown"`
 	LastTimeCritical           int64   `json:"last_time_critical"`
-	StateType                  int     `json:"state_type"`
-	LastNotification           int     `json:"last_notification"`
-	NextNotification           int     `json:"next_notification"`
-	NextCheck                  int64   `json:"next_check"`
+	StateType                  string  `json:"state_type"`
+	LastNotification           int64   `json:"last_notification"`
+	NextNotification           int64   `json:"next_notification"`
+	NextCheck                  int     `json:"next_check"`
 	NoMoreNotifications        bool    `json:"no_more_notifications"`
 	NotificationsEnabled       bool    `json:"notifications_enabled"`
 	ProblemHasBeenAcknowledged bool    `json:"problem_has_been_acknowledged"`
-	AcknowledgementType        int     `json:"acknowledgement_type"`
+	AcknowledgementType        string  `json:"acknowledgement_type"`
 	CurrentNotificationNumber  int     `json:"current_notification_number"`
 	AcceptPassiveChecks        bool    `json:"accept_passive_checks"`
 	EventHandlerEnabled        bool    `json:"event_handler_enabled"`
