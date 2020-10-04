@@ -8,9 +8,6 @@ import (
 
 const statusEndpoint = "statusjson.cgi"
 
-const startTimeKey = "starttime"
-const endTimeKey = "endtime"
-
 type HostStatus struct {
 	Up          bool
 	Down        bool
@@ -92,8 +89,8 @@ func (g GeneralHostRequest) build(query string, includeStartCount bool) Query {
 	q.SetNonEmpty("contactname", g.ContactName)
 
 	q.SetNonEmpty("hosttimefield", g.HostTimeField)
-	q.SetNonEmpty(startTimeKey, strconv.FormatInt(g.StartTime, 10))
-	q.SetNonEmpty(endTimeKey, strconv.FormatInt(g.EndTime, 10))
+	q.SetNonEmpty("starttime", strconv.FormatInt(g.StartTime, 10))
+	q.SetNonEmpty("endtime", strconv.FormatInt(g.EndTime, 10))
 
 	return q
 }
@@ -132,7 +129,7 @@ type HostCount struct {
 	Data          HostCountData `json:"data"`
 }
 
-//TODO(DanielSz50): Handle showDetails check properly
+// TODO(DanielSz50): Handle showDetails check properly.
 type HostListData struct {
 	Selectors map[string]json.RawMessage `json:"selectors"`
 	HostList  map[string]json.RawMessage `json:"hostlist"`
@@ -241,8 +238,8 @@ func (g GeneralServiceRequest) build(query string, includeStartCount bool) Query
 	q.SetNonEmpty("contactname", g.ContactName)
 
 	q.SetNonEmpty("servicetimefield", g.ServiceTimeField)
-	q.SetNonEmpty(startTimeKey, strconv.FormatInt(g.StartTime, 10))
-	q.SetNonEmpty(endTimeKey, strconv.FormatInt(g.EndTime, 10))
+	q.SetNonEmpty("starttime", strconv.FormatInt(g.StartTime, 10))
+	q.SetNonEmpty("endtime", strconv.FormatInt(g.EndTime, 10))
 
 	return q
 }
