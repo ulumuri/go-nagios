@@ -125,8 +125,7 @@ func TestGeneralHostRequest_build(t *testing.T) {
 			want: Query{
 				Endpoint: statusEndpoint,
 				URLQuery: url.Values{
-					"starttime": []string{"0"},
-					"endtime":   []string{"1"},
+					"endtime": []string{"1"},
 				},
 			},
 		},
@@ -348,8 +347,7 @@ func TestGeneralServiceRequest_build(t *testing.T) {
 			want: Query{
 				Endpoint: statusEndpoint,
 				URLQuery: url.Values{
-					"starttime": []string{"0"},
-					"endtime":   []string{"1"},
+					"endtime": []string{"1"},
 				},
 			},
 		},
@@ -406,7 +404,7 @@ func TestServiceCountRequest_Build(t *testing.T) {
 	}
 }
 
-func TestServieListRequest_Build(t *testing.T) {
+func TestServiceListRequest_Build(t *testing.T) {
 	tests := []struct {
 		name                  string
 		GeneralServiceRequest GeneralServiceRequest
@@ -437,21 +435,14 @@ func TestServieListRequest_Build(t *testing.T) {
 }
 
 func TestHostRequest_build(t *testing.T) {
-	type args struct {
-		query string
-	}
 	tests := []struct {
 		name        string
 		hostRequest HostRequest
-		args        args
 		want        Query
 	}{
 		{
 			name:        "blank",
 			hostRequest: HostRequest{HostName: "localhost"},
-			args: args{
-				query: "host",
-			},
 			want: Query{
 				Endpoint: statusEndpoint,
 				URLQuery: url.Values{
@@ -471,13 +462,9 @@ func TestHostRequest_build(t *testing.T) {
 }
 
 func TestServiceRequest_build(t *testing.T) {
-	type args struct {
-		query string
-	}
 	tests := []struct {
 		name           string
 		serviceRequest ServiceRequest
-		args           args
 		want           Query
 	}{
 		{
@@ -485,9 +472,6 @@ func TestServiceRequest_build(t *testing.T) {
 			serviceRequest: ServiceRequest{
 				HostName:           "localhost",
 				ServiceDescription: "http",
-			},
-			args: args{
-				query: "service",
 			},
 			want: Query{
 				Endpoint: statusEndpoint,
@@ -509,21 +493,14 @@ func TestServiceRequest_build(t *testing.T) {
 }
 
 func TestPerformanceDataRequest_Build(t *testing.T) {
-	type args struct {
-		query string
-	}
 	tests := []struct {
 		name                   string
 		performanceDataRequest PerformanceDataRequest
-		args                   args
 		want                   Query
 	}{
 		{
 			name:                   "blank",
 			performanceDataRequest: PerformanceDataRequest{},
-			args: args{
-				query: "performancedata",
-			},
 			want: Query{
 				Endpoint: statusEndpoint,
 				URLQuery: url.Values{

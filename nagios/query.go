@@ -8,6 +8,13 @@ type Query struct {
 }
 
 func (q Query) SetNonEmpty(key, value string) {
+	if key == startTimeKey || key == endTimeKey {
+		if value != "0" {
+			q.URLQuery.Set(key, value)
+		}
+		return
+	}
+
 	if len(value) > 0 {
 		q.URLQuery.Set(key, value)
 	}

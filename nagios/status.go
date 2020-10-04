@@ -8,6 +8,9 @@ import (
 
 const statusEndpoint = "statusjson.cgi"
 
+const startTimeKey = "starttime"
+const endTimeKey = "endtime"
+
 type HostStatus struct {
 	Up          bool
 	Down        bool
@@ -89,11 +92,8 @@ func (g GeneralHostRequest) build(query string, includeStartCount bool) Query {
 	q.SetNonEmpty("contactname", g.ContactName)
 
 	q.SetNonEmpty("hosttimefield", g.HostTimeField)
-
-	if g.StartTime != 0 || g.EndTime != 0 {
-		q.URLQuery.Set("starttime", strconv.FormatInt(g.StartTime, 10))
-		q.URLQuery.Set("endtime", strconv.FormatInt(g.EndTime, 10))
-	}
+	q.SetNonEmpty(startTimeKey, strconv.FormatInt(g.StartTime, 10))
+	q.SetNonEmpty(endTimeKey, strconv.FormatInt(g.EndTime, 10))
 
 	return q
 }
@@ -241,11 +241,8 @@ func (g GeneralServiceRequest) build(query string, includeStartCount bool) Query
 	q.SetNonEmpty("contactname", g.ContactName)
 
 	q.SetNonEmpty("servicetimefield", g.ServiceTimeField)
-
-	if g.StartTime != 0 || g.EndTime != 0 {
-		q.URLQuery.Set("starttime", strconv.FormatInt(g.StartTime, 10))
-		q.URLQuery.Set("endtime", strconv.FormatInt(g.EndTime, 10))
-	}
+	q.SetNonEmpty(startTimeKey, strconv.FormatInt(g.StartTime, 10))
+	q.SetNonEmpty(endTimeKey, strconv.FormatInt(g.EndTime, 10))
 
 	return q
 }
@@ -331,7 +328,7 @@ type HostDetails struct {
 	LastCheck         int64  `json:"last_check"`
 	NextCheck         int64  `json:"next_check"`
 
-	// CheckOptions with bitmask turns to the array
+	// CheckOptions with bitmask turns into an array.
 	CheckOptions               json.RawMessage `json:"check_options"`
 	CheckType                  string          `json:"check_type"`
 	LastStateChange            int64           `json:"last_state_change"`
